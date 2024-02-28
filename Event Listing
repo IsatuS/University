@@ -1,0 +1,42 @@
+import UIKit
+import Firebase
+
+class EventsViewController: UIViewController {
+    
+    var events: [Event] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        fetchEvents()
+    }
+    
+    func fetchEvents() {
+        let db = Firestore.firestore()
+        db.collection("events").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error getting events: \(error.localizedDescription)")
+                return
+            }
+            guard let documents = querySnapshot?.documents else {
+                print("No events available")
+                return
+            }
+            self.events = documents.compactMap { document in
+                return Event(document: document)
+            }
+            // Update UI to display events
+        }
+    }
+}
+
+struct Event {
+    let title: String
+    let date: Date
+    let location: String
+    
+    init?(document: QueryDocumentSnapshot) {
+        guard let data = document.data() else { return nil }
+        self.title = data["title"] as? String ?? ""
+        // Parse date and location similarly
+    }
+}
