@@ -1,0 +1,38 @@
+import UIKit
+import Firebase
+
+class AuthViewController: UIViewController {
+    
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+    @IBAction func signUpButtonTapped(_ sender: UIButton) {
+        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                print("Error creating user: \(error.localizedDescription)")
+                return
+            }
+            print("User created successfully!")
+            // Navigate to the next screen or perform additional actions
+        }
+    }
+    
+    @IBAction func loginButtonTapped(_ sender: UIButton) {
+        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        
+        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                print("Error signing in: \(error.localizedDescription)")
+                return
+            }
+            print("User logged in successfully!")
+            // Navigate to the next screen or perform additional actions
+        }
+    }
+}
